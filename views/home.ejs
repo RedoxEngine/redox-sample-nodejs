@@ -1,0 +1,152 @@
+<h1>Sample Application</h1>
+
+<h3>Received Redox Transmissions</h3>
+
+<table class="table table-bordered table-centered table-striped transmission-table">
+<thead>
+	<tr>
+		<th>Transmission ID</th>
+		<th>Data Model</th>
+		<th>Event Type</th>
+		<th>Time received</th>
+	</tr>
+</thead>
+<tbody>
+
+</tbody>
+</table>
+
+<h3>Messages Sent to Redox</h3>
+
+<table class="table table-bordered table-centered table-striped message-table">
+<thead>
+	<tr>
+		<th>Message ID</th>
+		<th>Data Model</th>
+		<th>Event Type</th>
+		<th>Time received</th>
+	</tr>
+</thead>
+<tbody>
+
+</tbody>
+</table>
+
+<h2>Post a message to Redox Engine</h2>
+
+<h3>Request</h3>
+<form>
+	<label class="control-label">API Key: </label>
+	<input id="apiKey" type="text" class="form-control" value=""/>
+
+	<label class="control-label">Secret: </label>
+	<input id="secret" type="password" class="form-control" value=""/>
+
+	<label class="control-label">Login URL: </label>
+	<input id="loginUrl" type="text" class="form-control" value="" />
+
+	<label class="control-label">API URL: </label>
+	<input id="apiUrl" type="text" class="form-control" value=""/>
+
+	<label class="control-label">Data: </label>
+
+	<div id="editor"></div>
+
+	<br>
+	<button type="button" class="btn btn-primary" onclick="postData()">Post</button>
+</form>
+
+<h3>Response</h3>
+
+<div>
+	<pre>
+  	<code id="response-container">
+
+  	</code>
+  </pre>
+</div>
+
+<script src="/js/dependencies/ace-editor/ace.js"></script>
+<script type="text/javascript">
+
+  var editor = ace.edit("editor");
+  var data = {
+		"Visit": {
+			"Location": {
+				"Department": "Park Ridge"
+			},
+			"VisitNumber": "21589221",
+			"Duration": "60",
+			"VisitDateTime": "2014-11-13T15:30:00.000Z",
+			"Reason": "reason",
+			"AttendingProvider": {
+				"ID": "35",
+				"IDType": "NPI",
+				"FirstName": "Avery",
+				"LastName": "Glen"
+			}
+		},
+		"Patient": {
+			"Identifiers": [
+				{
+					"ID": "1233982",
+					"IDType": "OPT"
+				},
+				{
+					"ID": "58587",
+					"IDType": "ATH"
+				},
+				{
+					"ID": "c7af3649-5dcb-49d0-ac67-f9daabc9eac3",
+					"IDType": "REDOX"
+				}
+			],
+			"Demographics": {
+				"FirstName": "Pat",
+				"LastName": "Mica",
+				"Sex": "Male",
+				"DOB": "1987-11-01"
+			}
+		},
+		"Meta": {
+			"DataModel": "Scheduling",
+			"DataAction": "POST",
+			"EventType": "New",
+			"Source": '9fd26727-604f-482a-9567-702f8802d204'
+		}
+	};
+
+  editor.setOptions({
+    wrap : true,
+    showGutter: false,
+    theme:'ace/theme/twilight',
+    mode: 'json',
+    firstLineNumber: 1,
+    maxLines: 9999,
+  });
+  //editor.setTheme("ace/theme/monokai");
+  editor.getSession().setMode("ace/mode/json");
+  editor.setValue(JSON.stringify(data, null, '\t'), -1)
+
+	var postData = function () {
+
+		var data = {
+			apiKey: $('#apiKey').val(),
+			secret: $('#secret').val(),
+			loginUrl: $('#loginUrl').val(),
+			apiUrl: $('#apiUrl').val(),
+			data: JSON.parse(editor.getValue())
+		};
+
+		$.ajax({
+			url: '/sendMessage',
+			type: 'POST',
+			dataType: 'json',
+			data: data
+		}).done(function (res) {
+			$('#response-container').html(res.responseText);
+		}).error(function (res) {
+			$('#response-container').html(res.responseText);
+		});
+	};
+</script>
