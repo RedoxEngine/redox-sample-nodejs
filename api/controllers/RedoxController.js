@@ -122,7 +122,7 @@ module.exports = {
 function requestToken(body, cb) {
 
   // Return the token value if it is still valid
-  if (new Date(Date.now()) > new Date(redox_token.expires)) {
+  if (new Date(Date.now()) < new Date(redox_token.expires)) {
     cb(null, redox_token.value);
   }
 
