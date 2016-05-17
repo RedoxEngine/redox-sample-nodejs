@@ -21,6 +21,12 @@ $ bower install
 $ createdb end-point
 ~~~
 
+### Complete organization specific setup
+In `/api/controllers/RedoxController.js` specify your source and/or destination values within the "TODO" section. Alternatively you can set the following environment variables for your node app: 
+- `VERIFICATION_TOKEN`
+- `REDOX_API_KEY`
+- `REDOX_API_SECRET`
+
 ### Run Locally
 ~~~bash
 $ sails lift
